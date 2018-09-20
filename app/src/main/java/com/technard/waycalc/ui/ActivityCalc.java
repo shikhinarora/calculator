@@ -1,6 +1,7 @@
 package com.technard.waycalc.ui;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -156,43 +157,7 @@ public class ActivityCalc extends AppCompatActivity implements View.OnClickListe
                 }
             }
 
-            String nOne = "", nTwo = "";
-            String operator = "";
-
-            for(int i = 0; i < len; i++){
-                String chr = String.valueOf(expression.charAt(i));
-
-                if (isOperator(chr)){
-                    if (operator.equals(""))
-                        operator = chr;
-                    else{
-                        double n1 = Double.parseDouble(nOne);
-                        double n2 = Double.parseDouble(nTwo);
-
-                        nOne = String.valueOf(useOperator(n1, n2, operator));
-                        nTwo = "";
-                        operator = chr;
-                    }
-                } else {
-                    if(nOne.equals(""))
-                        nOne = nOne + chr;
-                    else{
-                        if (operator.equals(""))
-                            nOne = nOne + chr;
-                        else
-                            nTwo = nTwo + chr;
-                    }
-                }
-
-                if (i == len - 1){
-                    if(!nTwo.equals("") && !operator.equals("")){
-                        double n1 = Double.parseDouble(nOne);
-                        double n2 = Double.parseDouble(nTwo);
-
-                        nOne = String.valueOf(useOperator(n1, n2, operator));
-                    }
-                }
-            }
+            String nOne = parseExpression(expression, len);
 
             if (nOne.equals(""))
                 nOne = "0";
@@ -216,6 +181,48 @@ public class ActivityCalc extends AppCompatActivity implements View.OnClickListe
         } else {
             et.setText("0");
         }
+    }
+
+    @NonNull
+    private String parseExpression(String expression, int len) {
+        String nOne = "", nTwo = "";
+        String operator = "";
+
+        for(int i = 0; i < len; i++){
+            String chr = String.valueOf(expression.charAt(i));
+
+            if (isOperator(chr)){
+                if (operator.equals(""))
+                    operator = chr;
+                else{
+                    double n1 = Double.parseDouble(nOne);
+                    double n2 = Double.parseDouble(nTwo);
+
+                    nOne = String.valueOf(useOperator(n1, n2, operator));
+                    nTwo = "";
+                    operator = chr;
+                }
+            } else {
+                if(nOne.equals(""))
+                    nOne = nOne + chr;
+                else{
+                    if (operator.equals(""))
+                        nOne = nOne + chr;
+                    else
+                        nTwo = nTwo + chr;
+                }
+            }
+
+            if (i == len - 1){
+                if(!nTwo.equals("") && !operator.equals("")){
+                    double n1 = Double.parseDouble(nOne);
+                    double n2 = Double.parseDouble(nTwo);
+
+                    nOne = String.valueOf(useOperator(n1, n2, operator));
+                }
+            }
+        }
+        return nOne;
     }
 
     private boolean isOperator(String chr){
